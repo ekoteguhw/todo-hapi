@@ -1,7 +1,16 @@
 const hapi = require('hapi')
+const monggose = require('mongoose')
+require('dotenv').config()
+
 const server = hapi.server({
   port: 4000,
   host: 'localhost'
+})
+
+monggose.connect(`mongodb://${process.env.HAPI_USER}:${process.env.HAPI_PASSWORD}@${process.env.HAPI_SERVER}:${process.env.HAPI_PORT}/${process.env.HAPI_DB}`, { useNewUrlParser: true })
+
+monggose.connection.once('open', () => {
+  console.log('Database Connected')
 })
 
 const init = async () => {
@@ -14,7 +23,7 @@ const init = async () => {
   })
 
   await server.start()
-  console.log(`Server running at: ${server.info.url}`)
+  console.log(`Server running at: ${server.info.uri}`)
 }
 
 init()
